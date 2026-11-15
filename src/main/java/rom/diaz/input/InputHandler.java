@@ -26,6 +26,12 @@ public class InputHandler {
                 "Key bindings cannot be null"
         );
 
+        if (keyBindings.getJumpKey() == KeyCode.R) {
+            throw new IllegalArgumentException(
+                    "R is reserved for restarting"
+            );
+        }
+
         int playerId = player.getPlayerId();
 
         if (players.containsKey(playerId)) {
@@ -65,6 +71,12 @@ public class InputHandler {
     public void assignKey(int playerId, KeyCode key) {
         Objects.requireNonNull(key, "Key cannot be null");
 
+        if (key == KeyCode.R) {
+            throw new IllegalArgumentException(
+                    "R is reserved for restarting"
+            );
+        }
+
         KeyBindings currentBindings =
                 bindings.get(playerId);
 
@@ -96,4 +108,25 @@ public class InputHandler {
 
         return false;
     }
+
+
+    public void updatePlayer(Player player) {
+        Objects.requireNonNull(
+                player,
+                "Player cannot be null"
+        );
+
+        int playerId = player.getPlayerId();
+
+        if (!players.containsKey(playerId)) {
+            throw new IllegalArgumentException(
+                    "Player is not registered"
+            );
+        }
+
+        players.put(playerId, player);
+    }
+
+
+
 }

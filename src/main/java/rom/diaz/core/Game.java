@@ -31,8 +31,10 @@ public class Game {
     private GameState state;
 
     public Game() {
+        inputHandler = new InputHandler();
         startGame();
     }
+
 
     public void startGame() {
 
@@ -52,12 +54,16 @@ public class Game {
                 GAP_HEIGHT
         );
 
-        inputHandler = new InputHandler();
 
-        inputHandler.registerPlayer(
-                player,
-                new KeyBindings(KeyCode.SPACE)
-        );
+        if (state == null) {
+            inputHandler.registerPlayer(
+                    player,
+                    new KeyBindings(KeyCode.SPACE)
+            );
+        } else {
+            inputHandler.updatePlayer(player);
+        }
+
 
         state = GameState.PLAYING;
     }

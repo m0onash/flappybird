@@ -122,4 +122,54 @@ class InputHandlerTest {
                 )
         );
     }
+
+
+    @Test
+    void shouldUpdateRegisteredPlayer() {
+        InputHandler handler = new InputHandler();
+
+        handler.registerPlayer(
+                new Player(1, new Bird(100, 200)),
+                new KeyBindings(KeyCode.SPACE)
+        );
+
+        Bird newBird = new Bird(100, 200);
+
+        handler.updatePlayer(
+                new Player(1, newBird)
+        );
+
+        handler.handleInput(KeyCode.SPACE);
+
+        assertTrue(newBird.getVelocityY() < 0);
+    }
+
+    @Test
+    void shouldRejectReservedRestartKey() {
+        InputHandler handler = new InputHandler();
+
+        handler.registerPlayer(
+                new Player(1, new Bird(100, 200)),
+                new KeyBindings(KeyCode.SPACE)
+        );
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> handler.assignKey(1, KeyCode.R)
+        );
+    }
+
+    @Test
+    void shouldRejectReservedKeyDuringRegistration() {
+        InputHandler handler = new InputHandler();
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> handler.registerPlayer(
+                        new Player(1, new Bird(100, 200)),
+                        new KeyBindings(KeyCode.R)
+                )
+        );
+    }
+
 }

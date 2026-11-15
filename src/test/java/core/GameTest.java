@@ -62,4 +62,46 @@ class GameTest {
                 game.getObstacleManager()
         );
     }
+
+    @Test
+    void shouldPreserveCustomKeyAfterRestart() {
+        Game game = new Game();
+
+        game.getInputHandler().assignKey(
+                1,
+                KeyCode.F
+        );
+
+        game.endGame();
+        game.handleInput(KeyCode.R);
+
+        var bird = game.getPlayer().getBird();
+
+        game.handleInput(KeyCode.F);
+
+        assertTrue(bird.getVelocityY() < 0);
+    }
+
+    @Test
+    void shouldNotRestoreOldKeyAfterRestart() {
+        Game game = new Game();
+
+        game.getInputHandler().assignKey(
+                1,
+                KeyCode.F
+        );
+
+        game.endGame();
+        game.handleInput(KeyCode.R);
+
+        var bird = game.getPlayer().getBird();
+
+        game.handleInput(KeyCode.SPACE);
+
+        assertEquals(
+                0.0,
+                bird.getVelocityY()
+        );
+    }
+
 }
