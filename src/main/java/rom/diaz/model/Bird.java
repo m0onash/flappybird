@@ -10,8 +10,8 @@ public class Bird {
     private double y;
     private double velocityY;
 
-    private static final double GRAVITY = 0.3;
-    private static final double JUMP_STRENGTH = -5.0;
+    private static final double GRAVITY = 0.18;
+    private static final double JUMP_STRENGTH = -4.5;
 
     public Bird(double x, double y) {
         this.x = x;
