@@ -1,88 +1,111 @@
 package rom.diaz;
 
-import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Scene;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
-import rom.diaz.core.Game;
-import rom.diaz.core.GameState;
-import rom.diaz.ui.GameCanvas;
+import rom.diaz.config.GameSettings;
+import rom.diaz.config.Localization;
+import rom.diaz.ui.GameModeScreen;
+import rom.diaz.ui.GameScreen;
+import rom.diaz.ui.MainMenuScreen;
+import rom.diaz.ui.SettingsScreen;
 
 public class Main extends Application {
 
-    private static final double WIDTH = 800;
-    private static final double HEIGHT = 600;
-
-    private static final long TICK_NANOS =
-            1_000_000_000L / 60;
-
-    private AnimationTimer gameLoop;
+    private Stage stage;
+    private Scene scene;
+    private GameScreen activeGameScreen;
+    private final GameSettings settings = new GameSettings();
+    private final Localization localization = new Localization(settings);
 
     @Override
     public void start(Stage stage) {
+        this.stage = stage;
+        MainMenuScreen menu = createMainMenu();
 
-        Game game = new Game();
-        GameCanvas canvas = new GameCanvas(WIDTH, HEIGHT);
+        scene = new Scene(menu, 1000, 700);
 
-        StackPane root = new StackPane(canvas);
-        Scene scene = new Scene(root, WIDTH, HEIGHT);
-
-        scene.setOnKeyPressed(event ->
-                game.handleInput(event.getCode())
+        scene.getStylesheets().add(
+                getClass()
+                        .getResource("/css/menu.css")
+                        .toExternalForm()
         );
-
-        gameLoop = new AnimationTimer() {
-
-            private long previousTime = 0;
-            private long accumulatedTime = 0;
-
-            @Override
-            public void handle(long now) {
-
-                if (previousTime == 0) {
-                    previousTime = now;
-                    return;
-                }
-
-                long elapsed = now - previousTime;
-                previousTime = now;
-
-                accumulatedTime += Math.min(
-                        elapsed,
-                        250_000_000L
-                );
-
-                while (accumulatedTime >= TICK_NANOS) {
-                    game.updateGame();
-                    accumulatedTime -= TICK_NANOS;
-                }
-
-                canvas.render(
-                        game.getPlayer().getBird(),
-                        game.getObstacleManager().getObstacles(),
-                        game.getPlayer().getScore()
-                );
-
-                if (game.getState() == GameState.FINISHED) {
-                    canvas.drawGameOver(
-                            game.getPlayer().getScore()
-                    );
-                }
-            }
-        };
 
         stage.setTitle("Flappy Sky");
         stage.setScene(scene);
-        stage.setResizable(false);
-        stage.setOnCloseRequest(event -> gameLoop.stop());
-        stage.show();
+        stage.setMinWidth(800);
+        stage.setMinHeight(600);
 
-        gameLoop.start();
+        stage.setOnCloseRequest(event -> {
+            if (activeGameScreen != null) {
+                activeGameScreen.stop();
+            }
+        });
+
+        stage.show();
+    }
+
+    private void showSettings() {
+        SettingsScreen settingsScreen = new SettingsScreen(
+                settings,
+                localization,
+                this::showMainMenu,
+                () -> {
+                    stage.setWidth(settings.getWindowWidth());
+                    stage.setHeight(settings.getWindowHeight());
+                },
+                this::showSettings
+        );
+
+        scene.setRoot(settingsScreen);
+    }
+
+
+
+    private MainMenuScreen createMainMenu() {
+        return new MainMenuScreen(
+                localization,
+                this::showGameModes,
+                this::showSettings,
+                () -> System.out.println("Stats clicked")
+        );
+    }
+
+    private void showMainMenu() {
+
+        scene.setRoot(createMainMenu());
+    }
+
+    private void showGameModes() {
+        GameModeScreen modes = new GameModeScreen(
+                localization,
+                this::showMainMenu,
+                this::startSoloGame,
+                players -> System.out.println(
+                        "Multiplayer selected: " + players
+                )
+        );
+
+        scene.setRoot(modes);
+    }
+
+    private void startSoloGame() {
+
+        activeGameScreen = new GameScreen(() -> {
+            activeGameScreen = null;
+            showMainMenu();
+        });
+
+        scene.setRoot(activeGameScreen);
+
+        // Wait until JavaFX has attached the screen to the scene.
+        Platform.runLater(activeGameScreen::start);
     }
 
     public static void main(String[] args) {
         launch(args);
     }
+
 }
