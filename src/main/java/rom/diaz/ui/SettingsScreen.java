@@ -7,6 +7,8 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.input.KeyCode;
+import javafx.scene.control.Alert;
 
 import rom.diaz.config.GameSettings;
 import rom.diaz.config.Localization;
@@ -20,7 +22,6 @@ public class SettingsScreen extends StackPane {
             Runnable onResolutionChanged,
             Runnable onLanguageChanged
     ) {
-
         getStyleClass().add("menu-root");
 
         // Back button
@@ -149,6 +150,48 @@ public class SettingsScreen extends StackPane {
             onResolutionChanged.run();
         });
 
+        Button jumpKeyButton = new Button("SPACE");
+        jumpKeyButton.getStyleClass().add("setting-button");
+
+        jumpKeyButton.setOnAction(event -> {
+
+            jumpKeyButton.setText("Press any key...");
+
+            jumpKeyButton.setOnKeyPressed(keyEvent -> {
+
+                KeyCode selectedKey = keyEvent.getCode();
+
+                // Escape cancels key capture.
+                if (selectedKey == KeyCode.ESCAPE) {
+                    jumpKeyButton.setText("SPACE");
+                    jumpKeyButton.setOnKeyPressed(null);
+                    keyEvent.consume();
+                    return;
+                }
+
+                // R is reserved for restarting the game.
+                if (selectedKey == KeyCode.R) {
+
+                    Alert alert = new Alert(
+                            Alert.AlertType.WARNING,
+                            "R is reserved for restarting the game."
+                    );
+
+                    alert.showAndWait();
+                    keyEvent.consume();
+                    return;
+                }
+
+                jumpKeyButton.setText(selectedKey.getName());
+                jumpKeyButton.setOnKeyPressed(null);
+
+                keyEvent.consume();
+            });
+
+            jumpKeyButton.requestFocus();
+        });
+
+
         // Setting rows
         HBox languageRow = createSettingRow(
                 localization.get("language"),
@@ -164,8 +207,15 @@ public class SettingsScreen extends StackPane {
                 14,
                 soundButton,
                 musicButton,
-                languageRow,
-                resolutionRow
+                createSettingRow(
+                        localization.get("language"),
+                        languageBox
+                ),
+                createSettingRow(
+                        localization.get("resolution"),
+                        resolutionBox
+                ),
+                jumpKeyButton
         );
 
         controls.setAlignment(Pos.CENTER);
