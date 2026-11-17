@@ -8,16 +8,14 @@ import javafx.stage.Stage;
 import rom.diaz.config.ControlsSettings;
 import rom.diaz.config.GameSettings;
 import rom.diaz.config.Localization;
-import rom.diaz.ui.GameModeScreen;
-import rom.diaz.ui.GameScreen;
-import rom.diaz.ui.MainMenuScreen;
-import rom.diaz.ui.SettingsScreen;
+import rom.diaz.ui.*;
 
 public class Main extends Application {
 
     private Stage stage;
     private Scene scene;
     private GameScreen activeGameScreen;
+    private MultiplayerScreen activeMultiplayerScreen;
     private final GameSettings settings = new GameSettings();
     private final Localization localization = new Localization(settings);
     private final ControlsSettings controlsSettings = new ControlsSettings();
@@ -40,11 +38,18 @@ public class Main extends Application {
         stage.setMinWidth(800);
         stage.setMinHeight(600);
 
+
         stage.setOnCloseRequest(event -> {
+
             if (activeGameScreen != null) {
                 activeGameScreen.stop();
             }
+
+            if (activeMultiplayerScreen != null) {
+                activeMultiplayerScreen.stop();
+            }
         });
+
 
         stage.show();
     }
@@ -85,17 +90,17 @@ public class Main extends Application {
     }
 
     private void showGameModes() {
+
         GameModeScreen modes = new GameModeScreen(
                 localization,
                 this::showMainMenu,
                 this::startSoloGame,
-                players -> System.out.println(
-                        "Multiplayer selected: " + players
-                )
+                this::startMultiplayerGame
         );
 
         scene.setRoot(modes);
     }
+
 
     private void startSoloGame() {
 
@@ -109,7 +114,6 @@ public class Main extends Application {
 
         scene.setRoot(activeGameScreen);
 
-        // Wait until JavaFX has attached the screen to the scene.
         Platform.runLater(activeGameScreen::start);
     }
 
@@ -117,4 +121,24 @@ public class Main extends Application {
         launch(args);
     }
 
+
+    private void startMultiplayerGame(int playerCount) {
+
+        MultiplayerScreen screen = new MultiplayerScreen(
+                playerCount,
+                controlsSettings,
+                () -> {
+                    activeMultiplayerScreen = null;
+                    showMainMenu();
+                }
+        );
+
+        activeMultiplayerScreen = screen;
+        scene.setRoot(screen);
+
+        Platform.runLater(screen::start);
+    }
+
+
 }
+
