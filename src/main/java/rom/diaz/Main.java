@@ -5,6 +5,7 @@ import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import rom.diaz.config.ControlsSettings;
 import rom.diaz.config.GameSettings;
 import rom.diaz.config.Localization;
 import rom.diaz.ui.GameModeScreen;
@@ -19,6 +20,7 @@ public class Main extends Application {
     private GameScreen activeGameScreen;
     private final GameSettings settings = new GameSettings();
     private final Localization localization = new Localization(settings);
+    private final ControlsSettings controlsSettings = new ControlsSettings();
 
     @Override
     public void start(Stage stage) {
@@ -47,10 +49,13 @@ public class Main extends Application {
         stage.show();
     }
 
+
     private void showSettings() {
+
         SettingsScreen settingsScreen = new SettingsScreen(
                 settings,
                 localization,
+                controlsSettings,
                 this::showMainMenu,
                 () -> {
                     stage.setWidth(settings.getWindowWidth());
@@ -61,6 +66,7 @@ public class Main extends Application {
 
         scene.setRoot(settingsScreen);
     }
+
 
 
 
@@ -93,10 +99,13 @@ public class Main extends Application {
 
     private void startSoloGame() {
 
-        activeGameScreen = new GameScreen(() -> {
-            activeGameScreen = null;
-            showMainMenu();
-        });
+        activeGameScreen = new GameScreen(
+                controlsSettings,
+                () -> {
+                    activeGameScreen = null;
+                    showMainMenu();
+                }
+        );
 
         scene.setRoot(activeGameScreen);
 

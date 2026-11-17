@@ -1,15 +1,13 @@
 package rom.diaz.ui;
 
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.input.KeyCode;
-import javafx.scene.control.Alert;
 
+import rom.diaz.config.ControlsSettings;
 import rom.diaz.config.GameSettings;
 import rom.diaz.config.Localization;
 
@@ -18,10 +16,12 @@ public class SettingsScreen extends StackPane {
     public SettingsScreen(
             GameSettings settings,
             Localization localization,
+            ControlsSettings controlsSettings,
             Runnable onBack,
             Runnable onResolutionChanged,
             Runnable onLanguageChanged
     ) {
+
         getStyleClass().add("menu-root");
 
         // Back button
@@ -150,46 +150,18 @@ public class SettingsScreen extends StackPane {
             onResolutionChanged.run();
         });
 
-        Button jumpKeyButton = new Button("SPACE");
-        jumpKeyButton.getStyleClass().add("setting-button");
+        VBox keybindingControls = new VBox(10);
 
-        jumpKeyButton.setOnAction(event -> {
+        for (int playerId = 1; playerId <= 4; playerId++) {
+            keybindingControls.getChildren().add(
+                    createKeybindingButton(
+                            controlsSettings,
+                            playerId
+                    )
+            );
+        }
 
-            jumpKeyButton.setText("Press any key...");
-
-            jumpKeyButton.setOnKeyPressed(keyEvent -> {
-
-                KeyCode selectedKey = keyEvent.getCode();
-
-                // Escape cancels key capture.
-                if (selectedKey == KeyCode.ESCAPE) {
-                    jumpKeyButton.setText("SPACE");
-                    jumpKeyButton.setOnKeyPressed(null);
-                    keyEvent.consume();
-                    return;
-                }
-
-                // R is reserved for restarting the game.
-                if (selectedKey == KeyCode.R) {
-
-                    Alert alert = new Alert(
-                            Alert.AlertType.WARNING,
-                            "R is reserved for restarting the game."
-                    );
-
-                    alert.showAndWait();
-                    keyEvent.consume();
-                    return;
-                }
-
-                jumpKeyButton.setText(selectedKey.getName());
-                jumpKeyButton.setOnKeyPressed(null);
-
-                keyEvent.consume();
-            });
-
-            jumpKeyButton.requestFocus();
-        });
+        keybindingControls.setAlignment(Pos.CENTER);
 
 
         // Setting rows
@@ -215,8 +187,9 @@ public class SettingsScreen extends StackPane {
                         localization.get("resolution"),
                         resolutionBox
                 ),
-                jumpKeyButton
+                keybindingControls
         );
+
 
         controls.setAlignment(Pos.CENTER);
         controls.setMaxWidth(600);
@@ -231,7 +204,17 @@ public class SettingsScreen extends StackPane {
 
         content.setAlignment(Pos.CENTER);
 
-        StackPane panel = new StackPane(content);
+        ScrollPane scrollPane = new ScrollPane(content);
+
+        scrollPane.setFitToWidth(true);
+        scrollPane.setPannable(true);
+
+        scrollPane.setStyle(
+                "-fx-background-color: transparent;" +
+                        "-fx-background: transparent;"
+        );
+
+        StackPane panel = new StackPane(scrollPane);
         panel.getStyleClass().add("menu-panel");
         panel.setMaxWidth(850);
         panel.setMaxHeight(650);
@@ -263,4 +246,81 @@ public class SettingsScreen extends StackPane {
                 name + ": " + (enabled ? "ON" : "OFF")
         );
     }
+
+    private Button createKeybindingButton(
+            ControlsSettings controlsSettings,
+            int playerId
+    ) {
+        Button button = new Button();
+        button.getStyleClass().add("setting-button");
+
+        updateKeybindingText(
+                button,
+                controlsSettings,
+                playerId
+        );
+
+        button.setOnAction(event -> {
+
+            button.setText("Press any key...");
+            button.requestFocus();
+
+            button.setOnKeyPressed(keyEvent -> {
+
+                KeyCode selectedKey = keyEvent.getCode();
+
+                // Escape cancels key capture.
+                if (selectedKey == KeyCode.ESCAPE) {
+                    updateKeybindingText(
+                            button,
+                            controlsSettings,
+                            playerId
+                    );
+
+                    button.setOnKeyPressed(null);
+                    keyEvent.consume();
+                    return;
+                }
+
+                boolean success = controlsSettings.setJumpKey(
+                        playerId,
+                        selectedKey
+                );
+
+                if (!success) {
+                    Alert alert = new Alert(
+                            Alert.AlertType.WARNING,
+                            "This key is reserved or already assigned."
+                    );
+
+                    alert.showAndWait();
+                }
+
+                updateKeybindingText(
+                        button,
+                        controlsSettings,
+                        playerId
+                );
+
+                button.setOnKeyPressed(null);
+                keyEvent.consume();
+            });
+        });
+
+        return button;
+    }
+
+    private void updateKeybindingText(
+            Button button,
+            ControlsSettings controlsSettings,
+            int playerId
+    ) {
+        button.setText(
+                "Player " + playerId + " — Jump: "
+                        + controlsSettings
+                        .getJumpKey(playerId)
+                        .getName()
+        );
+    }
+
 }

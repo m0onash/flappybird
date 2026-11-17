@@ -5,6 +5,7 @@ import javafx.animation.AnimationTimer;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.StackPane;
 
+import rom.diaz.config.ControlsSettings;
 import rom.diaz.core.Game;
 import rom.diaz.core.GameState;
 
@@ -22,11 +23,20 @@ public class GameScreen extends StackPane {
 
     private final Runnable onBack;
 
-    public GameScreen(Runnable onBack) {
+    public GameScreen(
+            ControlsSettings controlsSettings,
+            Runnable onBack
+    ) {
 
         this.onBack = onBack;
 
         game = new Game();
+
+        game.getInputHandler().assignKey(
+                1,
+                controlsSettings.getJumpKey(1)
+        );
+
         canvas = new GameCanvas(WIDTH, HEIGHT);
 
         getChildren().add(canvas);
