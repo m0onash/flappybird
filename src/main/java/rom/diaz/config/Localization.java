@@ -21,7 +21,23 @@ public class Localization {
                             Map.entry("music", "Music"),
                             Map.entry("sound", "Sound Effects"),
                             Map.entry("gameOver", "GAME OVER"),
-                            Map.entry("restart", "Press R to restart")
+                            Map.entry("restart", "Press R to restart"),
+                            Map.entry("player", "Player"),
+                            Map.entry("players", "Players"),
+                            Map.entry("bestScore", "Best Score"),
+                            Map.entry("obstaclesAvoided", "Obstacles Avoided"),
+                            Map.entry("timesLost", "Times Lost"),
+                            Map.entry("playerStats", "PLAYER STATISTICS"),
+                            Map.entry("score", "Score"),
+                            Map.entry("jumpKey", "Jump Key"),
+                            Map.entry("pressKey", "Press a key..."),
+                            Map.entry("on", "ON"),
+                            Map.entry("off", "OFF"),
+                            Map.entry("selectPlayers", "Select number of players"),
+                            Map.entry("controls", "Controls"),
+                            Map.entry("pressEscape", "Press ESC to return to menu"),
+                            Map.entry("allPlayersLost", "All players lost!")
+
                     ),
                     "es", Map.ofEntries(
                             Map.entry("play", "Jugar"),
@@ -37,7 +53,23 @@ public class Localization {
                             Map.entry("music", "Música"),
                             Map.entry("sound", "Efectos de sonido"),
                             Map.entry("gameOver", "FIN DEL JUEGO"),
-                            Map.entry("restart", "Pulsa R para reiniciar")
+                            Map.entry("restart", "Pulsa R para reiniciar"),
+                            Map.entry("player", "Jugador"),
+                            Map.entry("players", "Jugadores"),
+                            Map.entry("bestScore", "Mejor puntuación"),
+                            Map.entry("obstaclesAvoided", "Obstáculos evitados"),
+                            Map.entry("timesLost", "Veces perdidas"),
+                            Map.entry("playerStats", "ESTADÍSTICAS DE JUGADORES"),
+                            Map.entry("score", "Puntuación"),
+                            Map.entry("jumpKey", "Tecla de salto"),
+                            Map.entry("pressKey", "Pulsa una tecla..."),
+                            Map.entry("on", "ACTIVADO"),
+                            Map.entry("off", "DESACTIVADO"),
+                            Map.entry("selectPlayers", "Selecciona el número de jugadores"),
+                            Map.entry("controls", "Controles"),
+                            Map.entry("pressEscape", "Pulsa ESC para volver al menú"),
+                            Map.entry("allPlayersLost", "¡Todos los jugadores perdieron!")
+
                     )
             );
 

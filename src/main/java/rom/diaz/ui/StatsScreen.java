@@ -4,10 +4,9 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
+import rom.diaz.config.Localization;
 import rom.diaz.model.PlayerStats;
 import rom.diaz.service.StatsService;
 
@@ -15,6 +14,7 @@ public class StatsScreen extends VBox {
 
     public StatsScreen(
             StatsService statsService,
+            Localization localization,
             Runnable onBack
     ) {
         setAlignment(Pos.CENTER);
@@ -23,7 +23,9 @@ public class StatsScreen extends VBox {
 
         setStyle("-fx-background-color: #79d8f5;");
 
-        Label title = new Label("PLAYER STATISTICS");
+        Label title = new Label(
+                localization.get("playerStats")
+        );
 
         title.setStyle(
                 "-fx-font-size: 32px;" +
@@ -38,11 +40,13 @@ public class StatsScreen extends VBox {
             PlayerStats stats =
                     statsService.getPlayerStats(playerId);
 
-            VBox card = createPlayerCard(stats);
+            VBox card = createPlayerCard(stats, localization);
             playerList.getChildren().add(card);
         }
 
-        Button backButton = new Button("BACK");
+        Button backButton = new Button(
+                localization.get("back")
+        );
 
         backButton.setStyle(
                 "-fx-background-color: #ff9f35;" +
@@ -62,30 +66,28 @@ public class StatsScreen extends VBox {
         );
     }
 
-    private VBox createPlayerCard(PlayerStats stats) {
+    private VBox createPlayerCard(PlayerStats stats, Localization localization) {
+
 
         Label playerName = new Label(
-                "PLAYER " + stats.getPlayerId()
-        );
-
-        playerName.setStyle(
-                "-fx-font-size: 20px;" +
-                        "-fx-font-weight: bold;" +
-                        "-fx-text-fill: #193451;"
+                localization.get("player") + " " + stats.getPlayerId()
         );
 
         Label maxScore = new Label(
-                "Best Score: " + stats.getMaxScore()
+                localization.get("bestScore") + ": "
+                        + stats.getMaxScore()
         );
 
         Label obstacles = new Label(
-                "Obstacles Avoided: "
+                localization.get("obstaclesAvoided") + ": "
                         + stats.getObstaclesAvoided()
         );
 
         Label losses = new Label(
-                "Times Lost: " + stats.getTimesLost()
+                localization.get("timesLost") + ": "
+                        + stats.getTimesLost()
         );
+
 
         for (Label label : new Label[]{
                 maxScore, obstacles, losses

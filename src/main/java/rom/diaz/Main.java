@@ -172,6 +172,7 @@ public class Main extends Application {
 
         StatsScreen statsScreen = new StatsScreen(
                 statsService,
+                localization,
                 this::showMainMenu
         );
 
