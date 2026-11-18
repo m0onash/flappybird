@@ -8,6 +8,8 @@ import javafx.scene.layout.StackPane;
 import rom.diaz.config.ControlsSettings;
 import rom.diaz.core.Game;
 import rom.diaz.core.GameState;
+import rom.diaz.service.StatsService;
+
 
 public class GameScreen extends StackPane {
 
@@ -21,12 +23,17 @@ public class GameScreen extends StackPane {
     private final GameCanvas canvas;
     private final AnimationTimer gameLoop;
 
+    private final StatsService statsService;
+    private boolean statsSaved = false;
+
     private final Runnable onBack;
 
     public GameScreen(
             ControlsSettings controlsSettings,
+            StatsService statsService,
             Runnable onBack
-    ) {
+    )   {
+        this.statsService = statsService;
 
         this.onBack = onBack;
 
@@ -99,9 +106,21 @@ public class GameScreen extends StackPane {
         );
 
         if (game.getState() == GameState.FINISHED) {
+
+            if (!statsSaved) {
+                statsService.recordGameOver(
+                        1,
+                        game.getPlayer().getScore()
+                );
+
+                statsSaved = true;
+            }
+
             canvas.drawGameOver(
                     game.getPlayer().getScore()
             );
+        } else {
+            statsSaved = false;
         }
     }
 

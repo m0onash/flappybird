@@ -14,6 +14,7 @@ import rom.diaz.config.ControlsSettings;
 import rom.diaz.core.Game;
 import rom.diaz.core.GameState;
 import rom.diaz.core.MultiplayerGame;
+import rom.diaz.service.StatsService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +27,8 @@ public class MultiplayerScreen extends StackPane {
             1_000_000_000L / 60;
 
     private final MultiplayerGame multiplayer;
+    private final StatsService statsService;
+    private final boolean[] statsSaved;
     private final List<GameCanvas> canvases =
             new ArrayList<>();
 
@@ -34,8 +37,12 @@ public class MultiplayerScreen extends StackPane {
     public MultiplayerScreen(
             int playerCount,
             ControlsSettings controls,
+            StatsService statsService,
             Runnable onBack
     ) {
+        this.statsService = statsService;
+        this.statsSaved = new boolean[playerCount];
+
         multiplayer = new MultiplayerGame(
                 playerCount,
                 controls
@@ -202,9 +209,22 @@ public class MultiplayerScreen extends StackPane {
             );
 
             if (game.getState() == GameState.FINISHED) {
+
+                if (!statsSaved[i]) {
+                    statsService.recordGameOver(
+                            i + 1,
+                            game.getPlayer().getScore()
+                    );
+
+                    statsSaved[i] = true;
+                }
+
                 canvas.drawGameOver(
                         game.getPlayer().getScore()
                 );
+
+            } else {
+                statsSaved[i] = false;
             }
         }
     }

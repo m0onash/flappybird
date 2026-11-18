@@ -10,6 +10,10 @@ import rom.diaz.config.GameSettings;
 import rom.diaz.config.Localization;
 import rom.diaz.ui.*;
 
+import rom.diaz.repository.LocalStatsRepository;
+import rom.diaz.service.StatsService;
+import java.nio.file.Path;
+
 public class Main extends Application {
 
     private Stage stage;
@@ -19,10 +23,33 @@ public class Main extends Application {
     private final GameSettings settings = new GameSettings();
     private final Localization localization = new Localization(settings);
     private final ControlsSettings controlsSettings = new ControlsSettings();
+    private StatsService statsService;
 
     @Override
     public void start(Stage stage) {
         this.stage = stage;
+        Path databasePath = Path.of(
+                System.getProperty("user.home"),
+                "FlappySky",
+                "stats"
+        );
+
+        try {
+            java.nio.file.Files.createDirectories(
+                    databasePath.getParent()
+            );
+        } catch (java.io.IOException exception) {
+            throw new IllegalStateException(
+                    "Could not create database directory",
+                    exception
+            );
+        }
+
+        statsService = new StatsService(
+                new LocalStatsRepository(
+                        "jdbc:h2:file:" + databasePath.toAbsolutePath()
+                )
+        );
         MainMenuScreen menu = createMainMenu();
 
         scene = new Scene(menu, 1000, 700);
@@ -80,7 +107,7 @@ public class Main extends Application {
                 localization,
                 this::showGameModes,
                 this::showSettings,
-                () -> System.out.println("Stats clicked")
+                this::showStats
         );
     }
 
@@ -106,6 +133,7 @@ public class Main extends Application {
 
         activeGameScreen = new GameScreen(
                 controlsSettings,
+                statsService,
                 () -> {
                     activeGameScreen = null;
                     showMainMenu();
@@ -127,6 +155,7 @@ public class Main extends Application {
         MultiplayerScreen screen = new MultiplayerScreen(
                 playerCount,
                 controlsSettings,
+                statsService,
                 () -> {
                     activeMultiplayerScreen = null;
                     showMainMenu();
@@ -137,6 +166,16 @@ public class Main extends Application {
         scene.setRoot(screen);
 
         Platform.runLater(screen::start);
+    }
+
+    private void showStats() {
+
+        StatsScreen statsScreen = new StatsScreen(
+                statsService,
+                this::showMainMenu
+        );
+
+        scene.setRoot(statsScreen);
     }
 
 
