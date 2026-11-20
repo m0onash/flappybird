@@ -1,137 +1,188 @@
 ```mermaid
+
 classDiagram
+    direction TB
 
-    class Game {
-        -List~Player~ players
-        -GameSettings settings
-        -InputHandler inputHandler
-        -ObstacleManager obstacleManager
-        -GameState state
-        +startGame()
-        +updateGame()
-        +endGame()
-}
+    namespace Core {
+        class Game {
+            -Player player
+            -InputHandler inputHandler
+            -ObstacleManager obstacleManager
+            -GameState state
+            +updateGame()
+            +handleInput(KeyCode key)
+            +getPlayer() Player
+            +getState() GameState
+        }
 
-    class GameSettings {
-        -String language
-        -int windowWidth
-        -int windowHeight
-        -boolean soundEnabled
-        +changeLanguage(String language)
-        +changeResolution(int width, int height)
-        +toggleSound()
+        class MultiplayerGame {
+            -List~Game~ games
+            +update()
+            +handleInput(KeyCode key)
+            +getGames() List~Game~
+            +getPlayerCount() int
+        }
+
+        class GameState {
+            <<enumeration>>
+            PLAYING
+            FINISHED
+        }
+
+        class InputHandler {
+            +assignKey(int playerId, KeyCode key)
+        }
     }
 
-    class Player {
-        -int playerId
-        -int score
-        -PlayerState state
-        -Bird bird
-        -KeyBindings keyBindings
-        -PlayerScreen screen
-        +jump()
-        +finishRun()
-        +updateScore()
+    namespace Models {
+        class Player {
+            -int playerId
+            -int score
+            -Bird bird
+            +getScore() int
+            +getBird() Bird
+        }
+
+        class Bird {
+            -double x
+            -double y
+            -double velocityY
+            +jump()
+            +update()
+            +getVelocityY() double
+        }
+
+        class ObstacleManager {
+            -List~Obstacle~ obstacles
+            +getObstacles() List~Obstacle~
+        }
+
+        class Obstacle {
+            -double x
+            -double gapY
+            -double width
+            -double gapHeight
+        }
+
+        class PlayerStats {
+            -int playerId
+            -int maxScore
+            -int obstaclesAvoided
+            -int timesLost
+        }
     }
 
-    class Bird {
-        -float x
-        -float y
-        -float velocityY
-        +jump()
-        +update()
+    namespace Configuration {
+        class GameSettings {
+            -String language
+            -int windowWidth
+            -int windowHeight
+            -boolean soundEnabled
+            -boolean musicEnabled
+        }
+
+        class ControlsSettings {
+            +getJumpKey(int playerId) KeyCode
+        }
+
+        class Localization {
+            +get(String key) String
+        }
+
+        class SettingsRepository {
+            +save()
+            +load()
+        }
     }
 
-    class PlayerScreen {
-        +render()
-        +showGameOver()
-        +showScore()
+    namespace Persistence {
+        class StatsService {
+            +getPlayerStats(int playerId) PlayerStats
+            +recordGameOver(int playerId, int score)
+        }
+
+        class StatsRepository {
+            <<interface>>
+        }
     }
 
-    class InputHandler {
-        +handleInput()
-        +assignKey(int playerId, String key)
-        +checkKeyConflict(String key)
+    namespace Interface {
+        class Main {
+            +start(Stage stage)
+        }
+
+        class MainMenuScreen
+        class GameModeScreen
+        class SettingsScreen
+        class StatsScreen
+        class GameScreen {
+            -Game game
+            -GameCanvas canvas
+            -AnimationTimer gameLoop
+            +start()
+            +stop()
+        }
+
+        class MultiplayerScreen {
+            -MultiplayerGame multiplayer
+            -List~GameCanvas~ canvases
+            -AnimationTimer gameLoop
+            +start()
+            +stop()
+        }
+
+        class GameCanvas {
+            +render()
+            +drawGameOver(int score)
+        }
     }
 
-    class KeyBindings {
-        -String jumpKey
-        +setJumpKey(String key)
-        +getJumpKey() String
+    namespace Audio {
+        class AudioManager {
+            +startMusic()
+            +stopMusic()
+            +playJump()
+            +playScore()
+            +playCollision()
+        }
     }
 
-    class ObstacleManager {
-        -List~Obstacle~ obstacles
-        +update()
-        +generateObstacle()
-        +checkCollisions(Player player)
-    }
+    Main --> MainMenuScreen
+    Main --> GameModeScreen
+    Main --> SettingsScreen
+    Main --> StatsScreen
+    Main --> GameScreen
+    Main --> MultiplayerScreen
+    Main --> AudioManager
 
-    class Obstacle {
-        -float x
-        -float gapY
-        -float width
-        -float gapHeight
-        +update()
-        +isPassedBy(Bird bird) boolean
-    }
+    Game --> Player
+    Game --> InputHandler
+    Game --> ObstacleManager
+    Game --> GameState
 
-    class StatsRepository {
-        <<interface>>
-        +saveStats(PlayerStats stats)
-        +loadStats(int playerId) PlayerStats
-    }
+    MultiplayerGame "1" *-- "2..4" Game : coordinates
 
-    class LocalStatsRepository {
-        +saveStats(PlayerStats stats)
-        +loadStats(int playerId) PlayerStats
-    }
+    Player *-- Bird
+    ObstacleManager "1" *-- "0..*" Obstacle
 
-    class PlayerStats {
-        -int playerId
-        -int maxScore
-        -int obstaclesAvoided
-        -int timesLost
-        +updateMaxScore(int score)
-        +incrementObstaclesAvoided()
-        +incrementTimesLost()
-    }
+    GameScreen --> Game
+    GameScreen --> GameCanvas
+    GameScreen --> StatsService
+    GameScreen --> AudioManager
 
-    class GameState {
-        <<enumeration>>
-        MENU
-        PLAYING
-        PAUSED
-        FINISHED
-    }
+    MultiplayerScreen --> MultiplayerGame
+    MultiplayerScreen --> GameCanvas
+    MultiplayerScreen --> StatsService
+    MultiplayerScreen --> AudioManager
 
-    class PlayerState {
-        <<enumeration>>
-        ALIVE
-        GAME_OVER
-    }
+    StatsScreen --> StatsService
+    StatsService --> PlayerStats
+    StatsService --> StatsRepository
 
-    Game "1" *-- "1..3" Player : manages
-    Game --> GameSettings : uses
-    Game --> InputHandler : receives input
-    Game --> ObstacleManager : manages obstacles
-    Game --> StatsRepository : saves results
+    SettingsScreen --> GameSettings
+    SettingsScreen --> ControlsSettings
 
-    Player *-- Bird : controls
-    Player *-- KeyBindings : has controls
-    Player *-- PlayerScreen : has screen
-    Player --> PlayerStats : updates statistics
-    Player --> PlayerState : has state
+    Localization --> GameSettings
+    InputHandler --> ControlsSettings
 
-    InputHandler --> KeyBindings : reads keys
-    InputHandler --> Player : controls
-
-    ObstacleManager "1" *-- "0..*" Obstacle : manages
-    ObstacleManager --> Bird : checks collisions
-
-    StatsRepository <|.. LocalStatsRepository : implements
-    LocalStatsRepository --> PlayerStats : saves and loads
-    PlayerStats --> Player : tracks statistics
-
-    Game --> GameState : has state
 ```
