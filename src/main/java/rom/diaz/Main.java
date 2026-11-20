@@ -8,6 +8,7 @@ import javafx.stage.Stage;
 import rom.diaz.config.ControlsSettings;
 import rom.diaz.config.GameSettings;
 import rom.diaz.config.Localization;
+import rom.diaz.repository.SettingsRepository;
 import rom.diaz.ui.*;
 
 import rom.diaz.repository.LocalStatsRepository;
@@ -23,11 +24,13 @@ public class Main extends Application {
     private final GameSettings settings = new GameSettings();
     private final Localization localization = new Localization(settings);
     private final ControlsSettings controlsSettings = new ControlsSettings();
+    private final SettingsRepository settingsRepository = new SettingsRepository();
     private StatsService statsService;
 
     @Override
     public void start(Stage stage) {
         this.stage = stage;
+        settingsRepository.load(settings, controlsSettings);
         Path databasePath = Path.of(
                 System.getProperty("user.home"),
                 "FlappySky",
@@ -52,7 +55,11 @@ public class Main extends Application {
         );
         MainMenuScreen menu = createMainMenu();
 
-        scene = new Scene(menu, 1000, 700);
+        scene = new Scene(
+                menu,
+                settings.getWindowWidth(),
+                settings.getWindowHeight()
+        );
 
         scene.getStylesheets().add(
                 getClass()
@@ -67,6 +74,8 @@ public class Main extends Application {
 
 
         stage.setOnCloseRequest(event -> {
+
+            settingsRepository.save(settings, controlsSettings);
 
             if (activeGameScreen != null) {
                 activeGameScreen.stop();
