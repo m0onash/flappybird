@@ -54,7 +54,7 @@ public class MultiplayerScreen extends StackPane {
                 controls
         );
 
-        setStyle("-fx-background-color: #193451;");
+        getStyleClass().add("game-root");
         setFocusTraversable(true);
 
         GridPane grid = new GridPane();
@@ -221,14 +221,7 @@ public class MultiplayerScreen extends StackPane {
                         + " " + playerId
         );
 
-        playerLabel.setStyle(
-                "-fx-background-color: #193451;" +
-                        "-fx-text-fill: white;" +
-                        "-fx-font-weight: bold;" +
-                        "-fx-font-size: 15px;" +
-                        "-fx-padding: 7 12;" +
-                        "-fx-background-radius: 8;"
-        );
+        playerLabel.getStyleClass().add("multiplayer-label");
 
         StackPane cell = new StackPane(
                 viewport,

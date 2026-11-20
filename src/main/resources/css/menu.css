@@ -171,3 +171,277 @@
     -fx-background-radius: 10;
     -fx-pref-width: 170;
 }
+
+
+/* ==========================================
+   FLAPPY SKY — NEON CARNIVAL THEME
+   ========================================== */
+
+.menu-root {
+    -fx-background-color: #351348;
+    -fx-background-image: url("../images/flappy-sky-bg.png");
+    -fx-background-position: center center;
+    -fx-background-size: cover;
+}
+
+.menu-panel {
+    -fx-background-color: rgba(48, 13, 68, 0.94);
+    -fx-background-radius: 32;
+    -fx-border-color: #f5b7e5;
+    -fx-border-width: 2;
+    -fx-border-radius: 32;
+    -fx-padding: 35;
+    -fx-effect: dropshadow(gaussian, #22092f, 35, 0.35, 0, 12);
+}
+
+.menu-title {
+    -fx-font-family: "Arial Rounded MT Bold", "Arial";
+    -fx-font-size: 65px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, #ff4fa8, 16, 0.5, 0, 0);
+}
+
+.menu-title-sky {
+    -fx-font-size: 75px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ff88cf;
+    -fx-effect: dropshadow(gaussian, #ff4fa8, 20, 0.6, 0, 0);
+}
+
+.menu-subtitle {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ffd7f1;
+}
+
+.menu-button {
+    -fx-background-color: linear-gradient(to right, #632874, #3e1656);
+    -fx-background-radius: 18;
+    -fx-border-color: #b77fae;
+    -fx-border-width: 1;
+    -fx-border-radius: 18;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-cursor: hand;
+    -fx-padding: 16 22;
+    -fx-min-width: 280;
+    -fx-effect: dropshadow(gaussian, #230c31, 12, 0.25, 0, 5);
+}
+
+.menu-button:hover {
+    -fx-background-color: linear-gradient(to right, #a746b6, #7a2d9b);
+    -fx-border-color: #ffe3f6;
+}
+
+.play-button {
+    -fx-background-color: linear-gradient(to right, #ff5eb4, #bb53dd);
+    -fx-border-color: #ffe3f6;
+}
+
+.play-button:hover {
+    -fx-background-color: linear-gradient(to right, #ff82c6, #d875f0);
+}
+
+.mode-title,
+.mode-card-title,
+.setting-label {
+    -fx-text-fill: white;
+}
+
+.mode-description {
+    -fx-text-fill: #e4c7e5;
+}
+
+.mode-card {
+    -fx-background-color: #4e1b63;
+    -fx-background-radius: 22;
+    -fx-border-color: #a977a9;
+    -fx-border-width: 2;
+    -fx-border-radius: 22;
+    -fx-effect: dropshadow(gaussian, #22092f, 15, 0.25, 0, 6);
+}
+
+.solo-card {
+    -fx-background-color: #642b75;
+}
+
+.multiplayer-card {
+    -fx-background-color: #51216a;
+}
+
+.mode-icon {
+    -fx-background-color: #fff1fa;
+    -fx-text-fill: #7f2b80;
+    -fx-border-color: #f5b7e5;
+}
+
+.mode-action,
+.back-button,
+.setting-button {
+    -fx-background-color: #69347e;
+    -fx-text-fill: white;
+    -fx-border-color: #e5a9da;
+}
+
+.mode-action:hover,
+.back-button:hover,
+.setting-button:hover {
+    -fx-background-color: #c653ac;
+}
+
+.player-count-button {
+    -fx-background-color: #fff1fa;
+    -fx-text-fill: #7f2b80;
+    -fx-border-color: #e5a9da;
+}
+
+.player-count-button.selected {
+    -fx-background-color: #ff4fa8;
+    -fx-text-fill: white;
+}
+
+.combo-box {
+    -fx-background-color: #fff1fa;
+    -fx-border-color: #e5a9da;
+}
+
+/* ==========================================
+   NEON CARNIVAL — STATISTICS
+   ========================================== */
+
+.stats-title {
+    -fx-font-family: "Arial Rounded MT Bold", "Arial";
+    -fx-font-size: 32px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #fff7fc;
+    -fx-effect: dropshadow(gaussian, #ff4fa8, 18, 0.5, 0, 0);
+}
+
+.stats-scroll {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+    -fx-border-color: transparent;
+}
+
+.stats-scroll > .viewport {
+    -fx-background-color: transparent;
+}
+
+.stats-scroll .scroll-bar {
+    -fx-background-color: transparent;
+}
+
+.stats-card {
+    -fx-background-color: rgba(78, 27, 99, 0.92);
+    -fx-background-radius: 18;
+    -fx-border-color: #b77fae;
+    -fx-border-width: 2;
+    -fx-border-radius: 18;
+    -fx-effect: dropshadow(gaussian, #22092f, 14, 0.25, 0, 5);
+}
+
+.stats-player-name {
+    -fx-font-size: 21px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ff88cf;
+}
+
+.stats-value {
+    -fx-font-size: 15px;
+    -fx-text-fill: #fff7fc;
+}
+
+.stats-card:hover {
+    -fx-background-color: rgba(110, 40, 135, 0.96);
+    -fx-border-color: #ffd3ec;
+}
+
+/* ==========================================
+   NEON CARNIVAL — MAIN MENU DETAILS
+   ========================================== */
+
+.menu-hero {
+    -fx-alignment: center;
+    -fx-min-width: 270;
+}
+
+.menu-button-icon {
+    -fx-background-color: #fff1fa;
+    -fx-background-radius: 50%;
+    -fx-border-color: #ffe3f6;
+    -fx-border-radius: 50%;
+    -fx-border-width: 1;
+    -fx-text-fill: #7f2b80;
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-alignment: center;
+    -fx-min-width: 48;
+    -fx-min-height: 48;
+    -fx-pref-width: 48;
+    -fx-pref-height: 48;
+}
+
+.menu-button-title {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+.menu-button-description {
+    -fx-font-size: 12px;
+    -fx-text-fill: #f0cde9;
+}
+
+.menu-button-arrow {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+.menu-button {
+    -fx-content-display: graphic-only;
+    -fx-alignment: center-left;
+    -fx-pref-width: 420;
+    -fx-min-width: 0;
+    -fx-padding: 14 18;
+}
+
+.menu-button:hover {
+    -fx-translate-y: -2;
+}
+/* Gameplay background */
+
+.game-root {
+    -fx-background-color: #351348;
+    -fx-background-image: url("../images/flappy-sky-bg.png");
+    -fx-background-position: center center;
+    -fx-background-size: cover;
+}
+/* ==========================================
+   NEON CARNIVAL — GAMEPLAY
+   ========================================== */
+
+.game-root {
+    -fx-background-color: #351348;
+    -fx-background-image: url("../images/flappy-sky-bg.png");
+    -fx-background-position: center center;
+    -fx-background-size: cover;
+}
+
+.multiplayer-label {
+    -fx-background-color: rgba(61, 19, 84, 0.92);
+    -fx-background-radius: 10;
+
+    -fx-border-color: #ff88cf;
+    -fx-border-width: 1;
+    -fx-border-radius: 10;
+
+    -fx-text-fill: #fff7fc;
+    -fx-font-weight: bold;
+    -fx-font-size: 15px;
+    -fx-padding: 7 12;
+
+    -fx-effect: dropshadow(gaussian, #ff4fa8, 10, 0.3, 0, 0);
+}

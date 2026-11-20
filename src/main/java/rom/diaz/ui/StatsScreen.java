@@ -1,9 +1,11 @@
+
 package rom.diaz.ui;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
 
 import rom.diaz.config.Localization;
@@ -17,24 +19,20 @@ public class StatsScreen extends VBox {
             Localization localization,
             Runnable onBack
     ) {
+        getStyleClass().add("menu-root");
+
         setAlignment(Pos.CENTER);
         setSpacing(24);
         setPadding(new Insets(30));
 
-        setStyle("-fx-background-color: #79d8f5;");
-
         Label title = new Label(
                 localization.get("playerStats")
         );
-
-        title.setStyle(
-                "-fx-font-size: 32px;" +
-                        "-fx-font-weight: bold;" +
-                        "-fx-text-fill: #193451;"
-        );
+        title.getStyleClass().add("stats-title");
 
         VBox playerList = new VBox(12);
-        playerList.setMaxWidth(550);
+        playerList.setMaxWidth(600);
+        playerList.setFillWidth(true);
 
         for (int playerId = 1; playerId <= 4; playerId++) {
             PlayerStats stats =
@@ -44,34 +42,40 @@ public class StatsScreen extends VBox {
             playerList.getChildren().add(card);
         }
 
+        ScrollPane scrollPane = new ScrollPane(playerList);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setPannable(true);
+        scrollPane.setMaxWidth(650);
+
+        scrollPane.getStyleClass().add("stats-scroll");
+
+        VBox.setVgrow(
+                scrollPane,
+                javafx.scene.layout.Priority.ALWAYS
+        );
+
         Button backButton = new Button(
                 localization.get("back")
         );
 
-        backButton.setStyle(
-                "-fx-background-color: #ff9f35;" +
-                        "-fx-text-fill: #193451;" +
-                        "-fx-font-weight: bold;" +
-                        "-fx-font-size: 16px;" +
-                        "-fx-padding: 12 32;" +
-                        "-fx-background-radius: 12;"
-        );
-
+        backButton.getStyleClass().add("back-button");
         backButton.setOnAction(event -> onBack.run());
 
         getChildren().addAll(
                 title,
-                playerList,
+                scrollPane,
                 backButton
         );
     }
 
-    private VBox createPlayerCard(PlayerStats stats, Localization localization) {
-
-
+    private VBox createPlayerCard(
+            PlayerStats stats,
+            Localization localization
+    ) {
         Label playerName = new Label(
                 localization.get("player") + " " + stats.getPlayerId()
         );
+        playerName.getStyleClass().add("stats-player-name");
 
         Label maxScore = new Label(
                 localization.get("bestScore") + ": "
@@ -88,33 +92,22 @@ public class StatsScreen extends VBox {
                         + stats.getTimesLost()
         );
 
-
         for (Label label : new Label[]{
                 maxScore, obstacles, losses
         }) {
-            label.setStyle(
-                    "-fx-font-size: 15px;" +
-                            "-fx-text-fill: #193451;"
-            );
+            label.getStyleClass().add("stats-value");
         }
 
         VBox card = new VBox(
-                6,
+                8,
                 playerName,
                 maxScore,
                 obstacles,
                 losses
         );
 
-        card.setPadding(new Insets(15, 24, 15, 24));
-
-        card.setStyle(
-                "-fx-background-color: #fffdf5;" +
-                        "-fx-background-radius: 16;" +
-                        "-fx-border-color: #193451;" +
-                        "-fx-border-radius: 16;" +
-                        "-fx-border-width: 2;"
-        );
+        card.setPadding(new Insets(18, 24, 18, 24));
+        card.getStyleClass().add("stats-card");
 
         return card;
     }

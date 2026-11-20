@@ -11,6 +11,9 @@ import rom.diaz.config.Localization;
 import rom.diaz.core.Game;
 import rom.diaz.core.GameState;
 import rom.diaz.service.StatsService;
+import javafx.scene.layout.Pane;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.transform.Scale;
 
 
 public class GameScreen extends StackPane {
@@ -51,15 +54,43 @@ public class GameScreen extends StackPane {
                 controlsSettings.getJumpKey(1)
         );
 
+
         canvas = new GameCanvas(
                 WIDTH,
                 HEIGHT,
                 localization
         );
 
-        getChildren().add(canvas);
+// Container that fills the available screen.
+        Pane viewport = new Pane();
+        viewport.setMinSize(0, 0);
 
-        setStyle("-fx-background-color: #79d8f5;");
+// Scale the 800x600 game world to match the viewport.
+        Scale scale = new Scale(1, 1, 0, 0);
+
+        scale.xProperty().bind(
+                viewport.widthProperty().divide(WIDTH)
+        );
+
+        scale.yProperty().bind(
+                viewport.heightProperty().divide(HEIGHT)
+        );
+
+        canvas.getTransforms().add(scale);
+        viewport.getChildren().add(canvas);
+
+// Prevent graphics from extending outside the viewport.
+        Rectangle clip = new Rectangle();
+
+        clip.widthProperty().bind(viewport.widthProperty());
+        clip.heightProperty().bind(viewport.heightProperty());
+
+        viewport.setClip(clip);
+
+        getChildren().add(viewport);
+
+        getStyleClass().add("game-root");
+
 
         gameLoop = new AnimationTimer() {
 
