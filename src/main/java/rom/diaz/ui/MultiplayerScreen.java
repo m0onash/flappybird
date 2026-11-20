@@ -10,6 +10,7 @@ import javafx.scene.layout.*;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Scale;
 
+import rom.diaz.audio.AudioManager;
 import rom.diaz.config.ControlsSettings;
 import rom.diaz.config.Localization;
 import rom.diaz.core.Game;
@@ -34,16 +35,19 @@ public class MultiplayerScreen extends StackPane {
             new ArrayList<>();
 
     private final AnimationTimer gameLoop;
+    private final AudioManager audioManager;
 
     public MultiplayerScreen(
             int playerCount,
             ControlsSettings controls,
             StatsService statsService,
             Localization localization,
+            AudioManager audioManager,
             Runnable onBack
     ) {
         this.statsService = statsService;
         this.statsSaved = new boolean[playerCount];
+        this.audioManager = audioManager;
 
         multiplayer = new MultiplayerGame(
                 playerCount,
@@ -93,8 +97,20 @@ public class MultiplayerScreen extends StackPane {
                 stop();
                 onBack.run();
             } else {
-                multiplayer.handleInput(event.getCode());
+            KeyCode pressedKey = event.getCode();
+
+            for (int i = 0; i < multiplayer.getPlayerCount(); i++) {
+                Game game = multiplayer.getGames().get(i);
+
+                if (game.getState() == GameState.PLAYING
+                        && pressedKey == controls.getJumpKey(i + 1)) {
+                    audioManager.playJump();
+                    break;
+                }
             }
+
+            multiplayer.handleInput(pressedKey);
+        }
 
             event.consume();
         });
@@ -120,10 +136,39 @@ public class MultiplayerScreen extends StackPane {
                         250_000_000L
                 );
 
+
                 while (accumulatedTime >= TICK_NANOS) {
+
+                    List<Game> games = multiplayer.getGames();
+
+                    int[] previousScores = new int[games.size()];
+                    GameState[] previousStates = new GameState[games.size()];
+
+                    for (int i = 0; i < games.size(); i++) {
+                        Game game = games.get(i);
+
+                        previousScores[i] = game.getPlayer().getScore();
+                        previousStates[i] = game.getState();
+                    }
+
                     multiplayer.update();
+
+                    for (int i = 0; i < games.size(); i++) {
+                        Game game = games.get(i);
+
+                        if (game.getPlayer().getScore() > previousScores[i]) {
+                            audioManager.playScore();
+                        }
+
+                        if (previousStates[i] != GameState.FINISHED
+                                && game.getState() == GameState.FINISHED) {
+                            audioManager.playCollision();
+                        }
+                    }
+
                     accumulatedTime -= TICK_NANOS;
                 }
+
 
                 renderGames();
             }
@@ -243,10 +288,12 @@ public class MultiplayerScreen extends StackPane {
 
     public void start() {
         requestFocus();
+        audioManager.startMusic();
         gameLoop.start();
     }
 
     public void stop() {
         gameLoop.stop();
+        audioManager.stopMusic();
     }
 }

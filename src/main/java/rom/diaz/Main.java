@@ -5,6 +5,7 @@ import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import rom.diaz.audio.AudioManager;
 import rom.diaz.config.ControlsSettings;
 import rom.diaz.config.GameSettings;
 import rom.diaz.config.Localization;
@@ -25,12 +26,14 @@ public class Main extends Application {
     private final Localization localization = new Localization(settings);
     private final ControlsSettings controlsSettings = new ControlsSettings();
     private final SettingsRepository settingsRepository = new SettingsRepository();
+    private AudioManager audioManager;
     private StatsService statsService;
 
     @Override
     public void start(Stage stage) {
         this.stage = stage;
         settingsRepository.load(settings, controlsSettings);
+        audioManager = new AudioManager(settings);
         Path databasePath = Path.of(
                 System.getProperty("user.home"),
                 "FlappySky",
@@ -144,6 +147,7 @@ public class Main extends Application {
                 controlsSettings,
                 statsService,
                 localization,
+                audioManager,
                 () -> {
                     activeGameScreen = null;
                     showMainMenu();
@@ -151,7 +155,6 @@ public class Main extends Application {
         );
 
         scene.setRoot(activeGameScreen);
-
         Platform.runLater(activeGameScreen::start);
     }
 
@@ -167,10 +170,8 @@ public class Main extends Application {
                 controlsSettings,
                 statsService,
                 localization,
-                () -> {
-                    activeMultiplayerScreen = null;
-                    showMainMenu();
-                }
+                audioManager,
+                this::showMainMenu
         );
 
         activeMultiplayerScreen = screen;

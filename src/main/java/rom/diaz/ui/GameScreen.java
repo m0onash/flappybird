@@ -5,6 +5,7 @@ import javafx.animation.AnimationTimer;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.StackPane;
 
+import rom.diaz.audio.AudioManager;
 import rom.diaz.config.ControlsSettings;
 import rom.diaz.config.Localization;
 import rom.diaz.core.Game;
@@ -27,15 +28,19 @@ public class GameScreen extends StackPane {
     private final StatsService statsService;
     private boolean statsSaved = false;
 
+    private final AudioManager audioManager;
+
     private final Runnable onBack;
 
     public GameScreen(
             ControlsSettings controlsSettings,
             StatsService statsService,
             Localization localization,
+            AudioManager audioManager,
             Runnable onBack
-    )  {
+    ) {
         this.statsService = statsService;
+        this.audioManager = audioManager;
 
         this.onBack = onBack;
 
@@ -78,9 +83,26 @@ public class GameScreen extends StackPane {
                 );
 
                 while (accumulatedTime >= TICK_NANOS) {
+
+                    int previousScore = game.getPlayer().getScore();
+                    GameState previousState = game.getState();
+
                     game.updateGame();
+
+                    // Play when the player successfully passes an obstacle.
+                    if (game.getPlayer().getScore() > previousScore) {
+                        audioManager.playScore();
+                    }
+
+                    // Play once when the player loses.
+                    if (previousState != GameState.FINISHED
+                            && game.getState() == GameState.FINISHED) {
+                        audioManager.playCollision();
+                    }
+
                     accumulatedTime -= TICK_NANOS;
                 }
+
 
                 renderGame();
             }
@@ -97,7 +119,15 @@ public class GameScreen extends StackPane {
                 return;
             }
 
-            game.handleInput(event.getCode());
+            KeyCode pressedKey = event.getCode();
+
+            if (game.getState() == GameState.PLAYING
+                    && pressedKey == controlsSettings.getJumpKey(1)) {
+                audioManager.playJump();
+            }
+
+            game.handleInput(pressedKey);
+
         });
 
         renderGame();
@@ -133,9 +163,11 @@ public class GameScreen extends StackPane {
     public void start() {
         requestFocus();
         gameLoop.start();
+        audioManager.startMusic();
     }
 
     public void stop() {
         gameLoop.stop();
+        audioManager.stopMusic();
     }
 }
