@@ -143,6 +143,7 @@ public class Main extends Application {
         activeGameScreen = new GameScreen(
                 controlsSettings,
                 statsService,
+                localization,
                 () -> {
                     activeGameScreen = null;
                     showMainMenu();
@@ -165,6 +166,7 @@ public class Main extends Application {
                 playerCount,
                 controlsSettings,
                 statsService,
+                localization,
                 () -> {
                     activeMultiplayerScreen = null;
                     showMainMenu();

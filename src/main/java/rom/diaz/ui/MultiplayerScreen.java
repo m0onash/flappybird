@@ -11,6 +11,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Scale;
 
 import rom.diaz.config.ControlsSettings;
+import rom.diaz.config.Localization;
 import rom.diaz.core.Game;
 import rom.diaz.core.GameState;
 import rom.diaz.core.MultiplayerGame;
@@ -38,6 +39,7 @@ public class MultiplayerScreen extends StackPane {
             int playerCount,
             ControlsSettings controls,
             StatsService statsService,
+            Localization localization,
             Runnable onBack
     ) {
         this.statsService = statsService;
@@ -73,7 +75,10 @@ public class MultiplayerScreen extends StackPane {
         }
 
         for (int i = 0; i < playerCount; i++) {
-            StackPane cell = createPlayerCell(i + 1);
+            StackPane cell = createPlayerCell(
+                    i + 1,
+                    localization
+            );
 
             int column = i % columns;
             int row = i / columns;
@@ -127,11 +132,15 @@ public class MultiplayerScreen extends StackPane {
         renderGames();
     }
 
-    private StackPane createPlayerCell(int playerId) {
+    private StackPane createPlayerCell(
+            int playerId,
+            Localization localization
+    ) {
 
         GameCanvas canvas = new GameCanvas(
                 WORLD_WIDTH,
-                WORLD_HEIGHT
+                WORLD_HEIGHT,
+                localization
         );
 
         canvases.add(canvas);
@@ -162,7 +171,10 @@ public class MultiplayerScreen extends StackPane {
 
         viewport.setClip(clip);
 
-        Label playerLabel = new Label("PLAYER " + playerId);
+        Label playerLabel = new Label(
+                localization.get("player").toUpperCase()
+                        + " " + playerId
+        );
 
         playerLabel.setStyle(
                 "-fx-background-color: #193451;" +

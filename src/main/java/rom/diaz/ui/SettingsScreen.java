@@ -34,10 +34,9 @@ public class SettingsScreen extends StackPane {
 
         // Heading
         Label subtitle = new Label(
-                settings.getLanguage().equals("es")
-                        ? "A TU MANERA"
-                        : "YOUR WAY"
+                localization.get("settingsSubtitle")
         );
+
         subtitle.getStyleClass().add("menu-subtitle");
 
         Label title = new Label(
@@ -55,7 +54,8 @@ public class SettingsScreen extends StackPane {
         updateToggleText(
                 soundButton,
                 localization.get("sound"),
-                settings.isSoundEnabled()
+                settings.isSoundEnabled(),
+                localization
         );
 
         soundButton.setOnAction(event -> {
@@ -64,7 +64,8 @@ public class SettingsScreen extends StackPane {
             updateToggleText(
                     soundButton,
                     localization.get("sound"),
-                    settings.isSoundEnabled()
+                    settings.isSoundEnabled(),
+                    localization
             );
         });
 
@@ -75,7 +76,8 @@ public class SettingsScreen extends StackPane {
         updateToggleText(
                 musicButton,
                 localization.get("music"),
-                settings.isMusicEnabled()
+                settings.isMusicEnabled(),
+                localization
         );
 
         musicButton.setOnAction(event -> {
@@ -84,7 +86,8 @@ public class SettingsScreen extends StackPane {
             updateToggleText(
                     musicButton,
                     localization.get("music"),
-                    settings.isMusicEnabled()
+                    settings.isMusicEnabled(),
+                    localization
             );
         });
 
@@ -156,7 +159,8 @@ public class SettingsScreen extends StackPane {
             keybindingControls.getChildren().add(
                     createKeybindingButton(
                             controlsSettings,
-                            playerId
+                            playerId,
+                            localization
                     )
             );
         }
@@ -239,17 +243,19 @@ public class SettingsScreen extends StackPane {
     private void updateToggleText(
             Button button,
             String name,
-            boolean enabled
+            boolean enabled,
+            Localization localization
     ) {
-
         button.setText(
-                name + ": " + (enabled ? "ON" : "OFF")
+                name + ": " + localization.get(enabled ? "on" : "off")
         );
     }
 
+
     private Button createKeybindingButton(
             ControlsSettings controlsSettings,
-            int playerId
+            int playerId,
+            Localization localization
     ) {
         Button button = new Button();
         button.getStyleClass().add("setting-button");
@@ -257,12 +263,13 @@ public class SettingsScreen extends StackPane {
         updateKeybindingText(
                 button,
                 controlsSettings,
-                playerId
+                playerId,
+                localization
         );
 
         button.setOnAction(event -> {
 
-            button.setText("Press any key...");
+            button.setText(localization.get("pressAnyKey"));
             button.requestFocus();
 
             button.setOnKeyPressed(keyEvent -> {
@@ -274,7 +281,8 @@ public class SettingsScreen extends StackPane {
                     updateKeybindingText(
                             button,
                             controlsSettings,
-                            playerId
+                            playerId,
+                            localization
                     );
 
                     button.setOnKeyPressed(null);
@@ -290,7 +298,7 @@ public class SettingsScreen extends StackPane {
                 if (!success) {
                     Alert alert = new Alert(
                             Alert.AlertType.WARNING,
-                            "This key is reserved or already assigned."
+                            localization.get("keyUnavailable")
                     );
 
                     alert.showAndWait();
@@ -299,7 +307,8 @@ public class SettingsScreen extends StackPane {
                 updateKeybindingText(
                         button,
                         controlsSettings,
-                        playerId
+                        playerId,
+                        localization
                 );
 
                 button.setOnKeyPressed(null);
@@ -313,14 +322,15 @@ public class SettingsScreen extends StackPane {
     private void updateKeybindingText(
             Button button,
             ControlsSettings controlsSettings,
-            int playerId
+            int playerId,
+            Localization localization
     ) {
         button.setText(
-                "Player " + playerId + " — Jump: "
-                        + controlsSettings
-                        .getJumpKey(playerId)
-                        .getName()
+                localization.get("player") + " " + playerId
+                        + " — " + localization.get("jumpKey") + ": "
+                        + controlsSettings.getJumpKey(playerId).getName()
         );
     }
+
 
 }

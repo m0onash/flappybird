@@ -6,6 +6,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.StackPane;
 
 import rom.diaz.config.ControlsSettings;
+import rom.diaz.config.Localization;
 import rom.diaz.core.Game;
 import rom.diaz.core.GameState;
 import rom.diaz.service.StatsService;
@@ -31,8 +32,9 @@ public class GameScreen extends StackPane {
     public GameScreen(
             ControlsSettings controlsSettings,
             StatsService statsService,
+            Localization localization,
             Runnable onBack
-    )   {
+    )  {
         this.statsService = statsService;
 
         this.onBack = onBack;
@@ -44,7 +46,11 @@ public class GameScreen extends StackPane {
                 controlsSettings.getJumpKey(1)
         );
 
-        canvas = new GameCanvas(WIDTH, HEIGHT);
+        canvas = new GameCanvas(
+                WIDTH,
+                HEIGHT,
+                localization
+        );
 
         getChildren().add(canvas);
 

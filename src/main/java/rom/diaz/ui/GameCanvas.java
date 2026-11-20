@@ -5,6 +5,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 import javafx.scene.text.Font;
+import rom.diaz.config.Localization;
 import rom.diaz.model.Bird;
 import rom.diaz.model.Obstacle;
 
@@ -13,9 +14,15 @@ import java.util.List;
 public class GameCanvas extends Canvas {
 
     private static final double BIRD_RADIUS = 15;
+    private final Localization localization;
 
-    public GameCanvas(double width, double height) {
+    public GameCanvas(
+            double width,
+            double height,
+            Localization localization
+    ) {
         super(width, height);
+        this.localization = localization;
     }
 
     public void render(
@@ -96,7 +103,7 @@ public class GameCanvas extends Canvas {
         );
 
         gc.fillText(
-                "Score: " + score,
+                localization.get("score") + ": " + score,
                 20,
                 40
         );
@@ -126,21 +133,21 @@ public class GameCanvas extends Canvas {
 
         gc.setFont(Font.font(48));
         gc.fillText(
-                "GAME OVER",
+                localization.get("gameOver"),
                 centerX,
                 centerY - 40
         );
 
         gc.setFont(Font.font(28));
         gc.fillText(
-                "Score: " + score,
+                localization.get("score") + ": " + score,
                 centerX,
                 centerY + 10
         );
 
         gc.setFont(Font.font(22));
         gc.fillText(
-                "Press R to restart",
+                localization.get("restart"),
                 centerX,
                 centerY + 55
         );

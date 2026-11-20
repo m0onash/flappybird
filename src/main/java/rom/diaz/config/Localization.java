@@ -1,4 +1,3 @@
-
 package rom.diaz.config;
 
 import java.util.Map;
@@ -36,7 +35,17 @@ public class Localization {
                             Map.entry("selectPlayers", "Select number of players"),
                             Map.entry("controls", "Controls"),
                             Map.entry("pressEscape", "Press ESC to return to menu"),
-                            Map.entry("allPlayersLost", "All players lost!")
+                            Map.entry("allPlayersLost", "All players lost!"),
+                            Map.entry("chooseMode", "CHOOSE YOUR GAME MODE"),
+                            Map.entry("readyToFly", "Ready to Fly?"),
+                            Map.entry("modeDescription", "Choose how you want to play!"),
+                            Map.entry("soloDescription", "Fly solo and beat your high score!"),
+                            Map.entry("multiDescription", "Play with 2 to 4 players!"),
+                            Map.entry("flightTip", "Tip: Avoid the pipes and keep flying!"),
+                            Map.entry("settingsSubtitle", "YOUR WAY"),
+                            Map.entry("pressAnyKey", "Press any key..."),
+                            Map.entry("keyUnavailable", "This key is reserved or already assigned.")
+
 
                     ),
                     "es", Map.ofEntries(
@@ -68,7 +77,17 @@ public class Localization {
                             Map.entry("selectPlayers", "Selecciona el número de jugadores"),
                             Map.entry("controls", "Controles"),
                             Map.entry("pressEscape", "Pulsa ESC para volver al menú"),
-                            Map.entry("allPlayersLost", "¡Todos los jugadores perdieron!")
+                            Map.entry("allPlayersLost", "¡Todos los jugadores perdieron!"),
+                            Map.entry("chooseMode", "ELIGE TU MODO DE JUEGO"),
+                            Map.entry("readyToFly", "¿Listo para volar?"),
+                            Map.entry("modeDescription", "¡Elige cómo quieres jugar!"),
+                            Map.entry("soloDescription", "¡Vuela solo y supera tu récord!"),
+                            Map.entry("multiDescription", "¡Juega con 2 a 4 jugadores!"),
+                            Map.entry("flightTip", "Consejo: ¡Esquiva las tuberías y sigue volando!"),
+                            Map.entry("settingsSubtitle", "A TU MANERA"),
+                            Map.entry("pressAnyKey", "Pulsa cualquier tecla..."),
+                            Map.entry("keyUnavailable", "Esta tecla está reservada o ya está asignada.")
+
 
                     )
             );
